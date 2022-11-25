@@ -1,0 +1,45 @@
+{
+  "name": "template-fastify-with-db",
+  "version": "1.0.0",
+  "description": "fastify template with database",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/index.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rammfall-education/template-fastify-with-db.git"
+  },
+  "author": "rammfall",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rammfall-education/template-fastify-with-db/issues"
+  },
+  "homepage": "https://github.com/rammfall-education/template-fastify-with-db#readme",
+  "dependencies": {
+    "@fastify/cookie": "^8.3.0",
+    "@fastify/cors": "^8.2.0",
+    "@fastify/csrf-protection": "^6.0.0",
+    "@fastify/env": "^4.1.0",
+    "@fastify/formbody": "^7.3.0",
+    "@fastify/helmet": "^10.1.0",
+    "@fastify/multipart": "^7.3.0",
+    "@fastify/static": "^6.5.1",
+    "@fastify/swagger": "^8.1.0",
+    "@fastify/swagger-ui": "^1.2.0",
+    "@fastify/websocket": "^7.1.1",
+    "fastify": "^4.10.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.0"
+  },
+  "volta": {
+    "node": "18.12.1",
+    "npm": "9.1.2"
+  },
+  "prettier": {
+    "singleQuote": true
+  }
+}
