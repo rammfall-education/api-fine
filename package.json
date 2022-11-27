@@ -29,7 +29,10 @@
     "@fastify/swagger": "^8.1.0",
     "@fastify/swagger-ui": "^1.2.0",
     "@fastify/websocket": "^7.1.1",
-    "fastify": "^4.10.2"
+    "bcrypt": "^5.1.0",
+    "fastify": "^4.10.2",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.8.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20",
