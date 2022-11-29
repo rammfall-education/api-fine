@@ -38,7 +38,7 @@ export async function migration() {
   if (!rows.length) {
     await client.query(
       'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4);',
-      ['admin', 'admin@rammfall.com', await hash('admin1234', 10), 'admin']
+      ['admin', adminEmail, await hash('admin1234', 10), 'admin']
     );
   }
 }

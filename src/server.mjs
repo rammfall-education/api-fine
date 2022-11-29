@@ -9,8 +9,15 @@ import * as jwt from 'jsonwebtoken';
 import { client } from './initializers/database.mjs';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
+import {
+  NotProtectedRoutesList,
+  ROUTE_PREFIX,
+  Routes,
+} from './constants/routes.mjs';
+import { auth } from './hooks/auth.mjs';
+import { SECRET_WORD } from './config/index.mjs';
 
-const { sign, verify } = jwt.default;
+const { sign } = jwt.default;
 const server = fastify({
   logger: true,
   ajv: {
@@ -19,7 +26,6 @@ const server = fastify({
     },
   },
 });
-const SECRET_WORD = 'SECRet';
 
 server.register(fastifyCors);
 server.register(fastifyMultipart, {
@@ -37,21 +43,10 @@ server.get('/', (request, reply) => {
 
 server.register(
   (instance, opts, done) => {
-    instance.addHook('preHandler', async function (request, reply) {
-      if (['/api/login', '/api/register'].includes(request.url)) {
-        return;
-      }
-      const { token } = request.headers;
-      try {
-        const payload = await verify(token, SECRET_WORD);
-        request.payload = payload;
-      } catch (err) {
-        reply.status(401).send({ message: 'Unauthorized' });
-      }
-    });
+    instance.addHook('preHandler', auth);
 
     instance.post(
-      '/register',
+      Routes.register,
       {
         schema: {
           tags: ['Auth'],
@@ -131,7 +126,7 @@ server.register(
     );
 
     instance.post(
-      '/login',
+      Routes.login,
       {
         schema: {
           tags: ['Auth'],
@@ -480,7 +475,7 @@ server.register(
     done();
   },
   {
-    prefix: '/api',
+    prefix: ROUTE_PREFIX,
   }
 );
 
