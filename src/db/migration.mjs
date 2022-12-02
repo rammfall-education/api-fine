@@ -31,6 +31,14 @@ export async function migration() {
         FOREIGN KEY (userid) REFERENCES users(id)
       );
     `);
+  await client.query(`
+    CREATE TABLE IF NOT EXISTS balance(
+       id SERIAL PRIMARY KEY,
+       amount INTEGER DEFAULT(0),
+       userid INTEGER NOT NULL UNIQUE,
+       FOREIGN KEY (userid) REFERENCES users(id)
+    );
+  `);
   const adminEmail = 'admin@rammfall.com';
   const { rows } = await client.query('SELECT * FROM users WHERE email=$1;', [
     adminEmail,

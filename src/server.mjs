@@ -6,6 +6,7 @@ import fastifyCsrf from '@fastify/csrf-protection';
 import fastifyFormBody from '@fastify/formbody';
 import { compare, hash } from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { format, isAfter, isBefore } from 'date-fns';
 import { client } from './initializers/database.mjs';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
@@ -118,6 +119,12 @@ server.register(
             'INSERT INTO users (name, email, password) VALUES ($1, $2, $3);',
             [name, email, hashedPassword]
           );
+          const {
+            rows: [{ id }],
+          } = await client.query('SELECT * FROM users WHERE email=$1;', [
+            email,
+          ]);
+          await client.query('INSERT INTO balance (userid) VALUES ($1);', [id]);
           return reply.status(201).send({ message: 'User successful created' });
         }
 
@@ -367,6 +374,10 @@ server.register(
       '/users',
       {
         schema: {
+          description: 'Get all users',
+          get summary() {
+            return this.description;
+          },
           tags: ['Admin'],
           querystring: {
             type: 'object',
@@ -439,6 +450,10 @@ server.register(
       '/fine',
       {
         schema: {
+          description: 'Create fine to user',
+          get summary() {
+            return this.description;
+          },
           tags: ['Admin'],
           body: {
             type: 'object',
@@ -469,6 +484,240 @@ server.register(
           [userId, description, amount, deadline, id]
         );
         reply.send({ message: 'Successful created fine' });
+      }
+    );
+
+    instance.get(
+      Routes.fines,
+      {
+        schema: {
+          tags: ['User'],
+          description: 'Get all fines by filter',
+          get summary() {
+            return this.description;
+          },
+          querystring: {
+            type: 'object',
+            properties: {
+              dateFrom: {
+                type: 'string',
+                format: 'date',
+              },
+              dateTo: {
+                type: 'string',
+                format: 'date',
+              },
+              paid: {
+                type: 'boolean',
+                default: false,
+              },
+            },
+          },
+          response: {
+            200: {
+              description: 'Array of fines',
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'number',
+                  },
+                  description: {
+                    type: 'string',
+                  },
+                  deadline: {
+                    type: 'string',
+                    format: 'datetime',
+                  },
+                  date: {
+                    type: 'string',
+                    format: 'datetime',
+                  },
+                  amount: {
+                    type: 'number',
+                  },
+                  paid: {
+                    type: 'boolean',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      async (request, reply) => {
+        const {
+          dateFrom = format(new Date(2020, 0, 1), 'yyyy-MM-dd'),
+          dateTo = format(new Date(), 'yyyy-MM-dd'),
+          paid,
+        } = request.query;
+        const validatedDateFrom = new Date(dateFrom);
+        const validatedDateTo = new Date(dateTo);
+        const { id } = request.payload;
+        const { rows: fines } = await client.query(
+          'SELECT * FROM fines WHERE userid=$1 AND paid=$2;',
+          [id, paid]
+        );
+        const filteredFines = fines.filter(({ deadline }) => {
+          const deadlineDate = new Date(deadline);
+          return (
+            isAfter(deadlineDate, validatedDateFrom) &&
+            isBefore(deadlineDate, validatedDateTo)
+          );
+        });
+
+        reply.send(filteredFines);
+      }
+    );
+
+    instance.get(
+      Routes.balance,
+      {
+        schema: {
+          description: 'Get balance',
+          get summary() {
+            return this.description;
+          },
+          tags: ['Balance'],
+          response: {
+            200: {
+              description: 'Balance of user',
+              type: 'object',
+              properties: {
+                balance: {
+                  type: 'number',
+                },
+              },
+            },
+          },
+        },
+      },
+      async (request, reply) => {
+        const { id } = request.payload;
+        const {
+          rows: [{ amount }],
+        } = await client.query('SELECT * FROM balance WHERE id=$1;', [id]);
+
+        reply.send({ balance: amount });
+      }
+    );
+
+    instance.post(
+      Routes.topUp,
+      {
+        schema: {
+          tags: ['Balance'],
+          description: 'Top up balance',
+          get summary() {
+            return this.description;
+          },
+          body: {
+            type: 'object',
+            properties: {
+              amount: {
+                type: 'number',
+                minimum: 1,
+                maximum: 1000000,
+              },
+            },
+            required: ['amount'],
+          },
+        },
+      },
+      async (request, reply) => {
+        const { id } = request.payload;
+        const { amount } = request.body;
+
+        await client.query(
+          'UPDATE balance SET amount=amount + $1 WHERE userid=$2;',
+          [amount, id]
+        );
+        reply.send({ message: 'Success' });
+      }
+    );
+
+    instance.patch(
+      '/pay/fine/:id',
+      {
+        schema: {
+          tags: ['User'],
+          description: 'Pay a fine',
+          get summary() {
+            return this.description;
+          },
+          params: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'number',
+              },
+            },
+            required: ['id'],
+          },
+          response: {
+            200: {
+              description: 'Success payed fine',
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  default: 'Fine has been paid successfully',
+                },
+              },
+            },
+            400: {
+              description: 'Not enough money',
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  default: 'Not enough money',
+                },
+              },
+            },
+            404: {
+              description: 'Fine does not exist',
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  default: 'Fine does not exist',
+                },
+              },
+            },
+          },
+        },
+      },
+      async (request, reply) => {
+        const { id: userId } = request.payload;
+        const { id: fineId } = request.params;
+
+        const {
+          rows: [{ amount }],
+        } = await client.query('SELECT * FROM balance WHERE userid=$1;', [
+          userId,
+        ]);
+        const {
+          rows: [fine],
+        } = await client.query('SELECT * FROM fines WHERE id=$1;', [fineId]);
+        if (fine) {
+          if (fine.amount <= amount) {
+            await client.query(
+              'UPDATE balance SET amount=amount - $1 WHERE userid=$2;',
+              [fine.amount, userId]
+            );
+            await client.query('UPDATE fines SET paid=TRUE WHERE id=$1', [
+              fineId,
+            ]);
+
+            return reply.send({ message: 'Fine has been paid successfully' });
+          }
+
+          return reply.status(400).send({ message: 'Not enough money' });
+        }
+
+        reply.status(404).send({ message: 'Fine does not exist' });
       }
     );
 
