@@ -3,9 +3,7 @@ import { hash } from 'bcrypt';
 
 export async function migration() {
   try {
-    await client.query(
-      "CREATE TYPE ROLES IF NOT EXISTS AS ENUM('admin', 'user');"
-    );
+    await client.query("CREATE TYPE ROLES AS ENUM('admin', 'user');");
   } catch (err) {}
   await client.query(`
         CREATE TABLE IF NOT EXISTS users(

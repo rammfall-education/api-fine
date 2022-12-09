@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import server from './server.mjs';
 import { client } from './initializers/database.mjs';
 import { migration } from './db/migration.mjs';

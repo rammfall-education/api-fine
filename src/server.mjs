@@ -549,7 +549,7 @@ server.register(
       async (request, reply) => {
         const {
           dateFrom = format(new Date(2020, 0, 1), 'yyyy-MM-dd'),
-          dateTo = format(new Date(), 'yyyy-MM-dd'),
+          dateTo = format(new Date(2023, 0, 1), 'yyyy-MM-dd'),
           paid,
         } = request.query;
         const validatedDateFrom = new Date(dateFrom);
@@ -597,7 +597,7 @@ server.register(
         const { id } = request.payload;
         const {
           rows: [{ amount }],
-        } = await client.query('SELECT * FROM balance WHERE id=$1;', [id]);
+        } = await client.query('SELECT * FROM balance WHERE userid=$1;', [id]);
 
         reply.send({ balance: amount });
       }
