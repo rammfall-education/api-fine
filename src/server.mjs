@@ -559,6 +559,7 @@ server.register(
           'SELECT * FROM fines WHERE userid=$1 AND paid=$2;',
           [id, paid]
         );
+        console.log(id);
         const filteredFines = fines.filter(({ deadline }) => {
           const deadlineDate = new Date(deadline);
           return (
