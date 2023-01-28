@@ -98,8 +98,12 @@ server.register(
                   type: 'string',
                   default: 'Error when user already exists',
                 },
+                field: {
+                  type: 'string',
+                  default: 'email',
+                },
               },
-              required: ['message'],
+              required: ['message', 'field'],
               description: 'Error when user already exists',
             },
           },
@@ -128,7 +132,10 @@ server.register(
           return reply.status(201).send({ message: 'User successful created' });
         }
 
-        return reply.status(400).send({ message: 'User already exists' });
+        return reply.status(400).send({
+          message: 'User with this email already exists',
+          field: 'email',
+        });
       }
     );
 
@@ -186,6 +193,7 @@ server.register(
               type: 'object',
               properties: {
                 message: { type: 'string', default: 'User does not exit' },
+                field: { type: 'string', default: 'email' },
               },
             },
             403: {
@@ -196,6 +204,7 @@ server.register(
                   type: 'string',
                   default: 'Your password in incorrect',
                 },
+                field: { type: 'string', default: 'password' },
               },
             },
           },
@@ -222,10 +231,13 @@ server.register(
 
           return reply
             .status(403)
-            .send({ message: 'Your password in incorrect' });
+            .send({ message: 'Your password in incorrect', field: 'password' });
         }
 
-        return reply.status(400).send({ message: 'User does not exit' });
+        return reply.status(400).send({
+          message: 'User with this email does not exit',
+          field: 'email',
+        });
       }
     );
 
