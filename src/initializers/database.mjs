@@ -4,7 +4,6 @@ import * as pg from 'pg';
 
 const { Client } = pg.default;
 
-import tls from 'node:tls';
 export const client = new Client({
   connectionString:
     process.env.PSQL_CONNECTION ||
