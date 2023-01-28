@@ -21,7 +21,7 @@ In the table you can find your running containers and find uuid yours and kill h
 docker kill 9750c4116f96
 ```
 
-## After running database, create ```.env``` file and copy values from
+## After running database, create ```.env``` file and copy values from ```.env.example```
 
 ## And run migration
 ```bash
