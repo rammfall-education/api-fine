@@ -21,5 +21,18 @@ In the table you can find your running containers and find uuid yours and kill h
 docker kill 9750c4116f96
 ```
 
+## After running database, create ```.env``` file and copy values from
+
+## And run migration
+```bash
+npm run migration
+```
+this creates structure in DB
+
+## And start the server
+
+```bash
+npm run start
+```
 
 ## To show swagger docs go to route ```/documentation```
