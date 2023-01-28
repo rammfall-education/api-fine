@@ -20,3 +20,6 @@ In the table you can find your running containers and find uuid yours and kill h
 ```bash
 docker kill 9750c4116f96
 ```
+
+
+## To show swagger docs go to route /documentation
