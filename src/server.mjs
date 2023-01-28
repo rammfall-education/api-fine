@@ -208,7 +208,7 @@ server.register(
               { email: user.email, id: user.id },
               SECRET_WORD,
               {
-                expiresIn: '2h',
+                expiresIn: '24h',
               }
             );
 
