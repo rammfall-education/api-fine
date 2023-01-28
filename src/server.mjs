@@ -163,7 +163,7 @@ server.register(
             200: {
               description: 'Successful logged in account',
               type: 'object',
-              required: ['token', 'email'],
+              required: ['token', 'email', 'role'],
               properties: {
                 token: {
                   type: 'string',
@@ -173,6 +173,11 @@ server.register(
                 email: {
                   type: 'string',
                   default: 'test@test.com',
+                },
+                role: {
+                  type: 'string',
+                  default: 'ADMIN',
+                  description: 'Type can be admin or user',
                 },
               },
             },
@@ -212,7 +217,7 @@ server.register(
               }
             );
 
-            return reply.send({ token, email });
+            return reply.send({ token, email, role: user.role });
           }
 
           return reply
