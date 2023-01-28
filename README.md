@@ -22,4 +22,4 @@ docker kill 9750c4116f96
 ```
 
 
-## To show swagger docs go to route /documentation
+## To show swagger docs go to route ```/documentation```
