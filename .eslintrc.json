@@ -1,0 +1,30 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": ["airbnb-base", "prettier"],
+    "overrides": [
+    ],
+  "plugins": [
+    "prettier"
+  ],
+  "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "rules": {
+      "import/extensions": ["error", {
+        "mjs": "always"
+      }],
+      "import/prefer-default-export": "off",
+      "prettier/prettier": [
+        "error",
+        {
+          "semi": true,
+          "singleQuote": true,
+          "printWidth": 100
+        }
+      ]
+    }
+}

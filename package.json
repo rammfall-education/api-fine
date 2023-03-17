@@ -4,9 +4,10 @@
   "description": "fastify template with database",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "uvu",
     "start": "nodemon ./src/index.mjs",
-    "migration": "node src/db/migration.mjs"
+    "migration": "node src/db/migration.mjs",
+    "migration:revert": "node src/db/revert.mjs"
   },
   "repository": {
     "type": "git",
@@ -35,9 +36,16 @@
     "dotenv": "^16.0.3",
     "fastify": "^4.10.2",
     "jsonwebtoken": "^8.5.1",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "uvu": "^0.5.6"
   },
   "devDependencies": {
+    "babel-jest": "^29.5.0",
+    "eslint": "^8.34.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.0"
   },

@@ -1,18 +1,15 @@
 import * as dotenv from 'dotenv';
-dotenv.config();
 import server from './server.mjs';
 import { client } from './initializers/database.mjs';
-import { migration } from './db/migration.mjs';
+
+dotenv.config();
 
 server
   .listen({
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3001,
     host: '0.0.0.0',
   })
   .then(() => client.connect())
-  .then(() => {
-    return migration();
-  })
   .catch((err) => {
     console.log(err);
   });

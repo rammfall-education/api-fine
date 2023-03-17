@@ -3,9 +3,15 @@ export const ROUTE_PREFIX = '/api';
 export const Routes = {
   login: '/login',
   register: '/register',
+  accountEmail: '/account/email',
+  accountPassword: '/account/password',
+  users: '/users',
   fines: '/fines',
   balance: '/balance',
   topUp: '/balance/top-up',
+  fine: '/fine',
+  specificFine: '/pay/fine/:id',
+  adminFines: '/admin/fines',
 };
 
 export const NotProtectedRoutes = {
