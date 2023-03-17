@@ -9,7 +9,9 @@ export async function migration() {
     console.log('Roles enum already exists');
   }
   try {
-    await client.query(`CREATE TYPE STATUS AS ENUM('canceled', 'completed', 'pending');`);
+    await client.query(
+      `CREATE TYPE STATUS AS ENUM('canceled', 'completed', 'pending', 'requested');`
+    );
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log('Status enum already exists');
@@ -30,14 +32,14 @@ export async function migration() {
         date DATE NOT NULL DEFAULT(CURRENT_DATE),
         description TEXT NOT NULL,
         amount INTEGER NOT NULL,
-        status STATUS DEFAULT ('pending'),
+        status STATUS DEFAULT ('requested'),
         adminid INTEGER NOT NULL,
         userid INTEGER NOT NULL,
         deadline DATE NOT NULL,
         FOREIGN KEY (adminid) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE
       );
-    `);
+  `);
   await client.query(`
     CREATE TABLE IF NOT EXISTS balance(
        id SERIAL PRIMARY KEY,

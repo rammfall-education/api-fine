@@ -2,7 +2,7 @@ import { client } from '../../initializers/database.mjs';
 import { Routes } from '../../constants/routes.mjs';
 import { tokenValidationHeaderRule } from '../../validations/token.mjs';
 
-const createFine = async (request, reply) => {
+const createFine = async (request) => {
   const { id } = request.payload;
   const { userId, description, amount, deadline } = request.body;
 
@@ -11,7 +11,7 @@ const createFine = async (request, reply) => {
     [userId, description, amount, deadline, id]
   );
 
-  reply.send({ message: 'Successful created fine' });
+  return { message: 'Successful created fine' };
 };
 
 export const createFineConfig = [

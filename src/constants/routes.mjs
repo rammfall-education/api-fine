@@ -7,6 +7,8 @@ export const Routes = {
   accountPassword: '/account/password',
   users: '/users',
   fines: '/fines',
+  discard: '/discard/:id',
+  status: '/status/:id',
   balance: '/balance',
   topUp: '/balance/top-up',
   fine: '/fine',

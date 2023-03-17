@@ -20,7 +20,7 @@ export const adminFinesConfig = [
             type: 'array',
             items: { enum: FINE_STATUSES },
             description: 'Select statuses for searching',
-            maxItems: 3,
+            maxItems: 4,
           },
           description: {
             type: 'string',

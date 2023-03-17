@@ -4,12 +4,9 @@ import fastifyMultipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
 import fastifyCsrf from '@fastify/csrf-protection';
 import fastifyFormBody from '@fastify/formbody';
-import * as jwt from 'jsonwebtoken';
-import { format, isAfter, isBefore, addYears } from 'date-fns';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
-import { client } from './initializers/database.mjs';
-import { ROUTE_PREFIX, Routes } from './constants/routes.mjs';
+import { ROUTE_PREFIX } from './constants/routes.mjs';
 import { auth } from './hooks/auth.mjs';
 import { loginConfig } from './handlers/auth/login.mjs';
 import { registerConfig } from './handlers/auth/register.mjs';
@@ -22,6 +19,8 @@ import { getBalanceConfig } from './handlers/balance/getBalance.mjs';
 import { topUpConfig } from './handlers/balance/topUp.mjs';
 import { payFineConfig } from './handlers/user/payFine.mjs';
 import { adminFinesConfig } from './handlers/admin/fines.mjs';
+import { requestToDiscardConfig } from './handlers/user/requestToDiscard.mjs';
+import { changeFineStatusConfig } from './handlers/admin/changeFineStatus.mjs';
 
 const server = fastify({
   logger: true,
@@ -57,6 +56,8 @@ server.register(
     instance.post(...topUpConfig);
     instance.patch(...payFineConfig);
     instance.get(...adminFinesConfig);
+    instance.patch(...requestToDiscardConfig);
+    instance.patch(...changeFineStatusConfig);
 
     done();
   },

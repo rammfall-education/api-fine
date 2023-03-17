@@ -1,4 +1,5 @@
 import { addYears, format, isAfter, isBefore } from 'date-fns';
+
 import { client } from '../../initializers/database.mjs';
 import { Routes } from '../../constants/routes.mjs';
 import { tokenValidationHeaderRule } from '../../validations/token.mjs';
@@ -49,7 +50,7 @@ export const getFinesConfig = [
             type: 'array',
             items: { enum: FINE_STATUSES },
             description: 'Select statuses for searching',
-            maxItems: 3,
+            maxItems: 4,
           },
         },
       },

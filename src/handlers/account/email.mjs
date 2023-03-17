@@ -16,10 +16,11 @@ const emailHandler = async (request, reply) => {
   if (!user) {
     await client.query('UPDATE users SET email=$1 WHERE id=$2;', [email, id]);
 
-    return reply.send({ email });
+    return { email };
   }
 
-  reply.status(400).send({ message: 'Email already exist' });
+  reply.status(400);
+  return { message: 'Email already exist' };
 };
 
 export const accountEmailConfig = [

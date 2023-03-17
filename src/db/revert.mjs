@@ -5,6 +5,8 @@ export async function revertMigration() {
   await client.query('DROP TABLE balance;');
   await client.query('DROP TABLE fines;');
   await client.query('DROP TABLE users;');
+  await client.query('DROP TYPE STATUS;');
+  await client.query('DROP TYPE ROLES;');
   await client.end();
 }
 
